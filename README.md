@@ -74,7 +74,7 @@ sequenceDiagram
     MP-->>Browser: Show in UI (port 8025)
     RMQ-->>Browser: Management UI (port 15673)
     
-✨ Features
+**✨ Features**
 
     ✅ 3 Independent Publisher Apps - Each sends 5 emails
 
@@ -90,7 +90,7 @@ sequenceDiagram
 
     ✅ Makefile - Command shortcuts
 
-🛠️ Technology Stack
+**🛠️ Technology Stack**
 
     Backend Language: Go 1.21+
 
@@ -135,31 +135,26 @@ Prerequisites
 
 Step by Step Installation
 1. Clone the Project
-        bash
         
         git clone https://github.com/yourusername/email-dispatcher.git
         cd email-dispatcher
 
 2. Install Dependencies
-        bash
         
         go mod download
 
 3. Start Docker Services
-        bash
         
         make up
         # OR
         docker compose up -d
 
 4. Check Services
-        bash
         
         docker compose ps
 
 🎮 How to Use
 1. Start Consumer (Terminal 1)
-        bash
         
         make consumer
         # OR
@@ -173,9 +168,10 @@ Step by Step Installation
         go run publisher/main.go
 
 3. Access UIs
-        flowchart TD
-    A[RabbitMQ Management] --> B[http://localhost:15673<br/>guest/guest]
-    C[Mailpit UI] --> D[http://localhost:8025<br/>None]
+     | Service               | URL                       | Credentials   |
+|-----------------------|---------------------------|---------------|
+| RabbitMQ Management   | http://localhost:15673    | guest/guest   |
+| Mailpit UI            | http://localhost:8025     | None          |
 
 **📊 Ports & Services**
 | Service              | Port  | Usage                  |
@@ -212,8 +208,8 @@ flowchart LR
     Ack --> Get
     
 **🧪 Testing**
+
 Mailpit API Test
-        bash
         
         # Send test email
         curl -X POST http://localhost:8025/api/v1/send \
@@ -229,7 +225,6 @@ Mailpit API Test
         curl -s http://localhost:8025/api/v1/messages | python3 -m json.tool
 
 RabbitMQ API Test
-        bash
         
         # View queues
         curl -s -u guest:guest http://localhost:15673/api/queues | python3 -m json.tool
@@ -285,11 +280,11 @@ Diagnostic Commands
 
 **📞 Contact**
 
-    Project Link: https://github.com/yourusername/email-dispatcher
+**🔗 Useful Links**
 
-    RabbitMQ Docs: https://www.rabbitmq.com/documentation.html
-
-    Mailpit Docs: https://mailpit.axllent.org/docs/
+- **Project Link:** [RabbitMQ Email Dispatcher](https://github.com/Ashraful52038/RabbitMQ-Email-Dispatcher)  
+- **RabbitMQ Docs:** [https://www.rabbitmq.com/documentation.html](https://www.rabbitmq.com/documentation.html)  
+- **Mailpit Docs:** [https://mailpit.axllent.org/docs/](https://mailpit.axllent.org/docs/)
 
 **🎯 Application Flow (Code Level)**
 classDiagram
@@ -321,7 +316,6 @@ classDiagram
     MailpitClient --> EmailEvent
 
 **🏁 Quick Start Commands**
-        bash
         
         # 1. Clone project
         git clone <repo-url>
