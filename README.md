@@ -5,8 +5,11 @@
 ![RabbitMQ](https://img.shields.io/badge/RabbitMQ-3.13-FF6600)
 ![Docker Compose](https://img.shields.io/badge/Docker-Compose-2496ED)
 
-**📋 Project Overview**
-This project is an email dispatcher system that collects emails from 3 different applications, queues them in RabbitMQ, and dispatches them to Mailpit (test mail server) using 2 concurrent workers.
+**📋 Project Overview**  
+This project is an email dispatcher system that collects emails from 3 different applications, queues them in RabbitMQ, and dispatches them to Mailpit (test mail server) using 2 concurrent workers.  
+
+➡️ In short: **A RabbitMQ‑powered pipeline that reliably delivers emails to Mailpit with concurrent worker processing.**
+
 
 **🏗️ Architecture Diagram**
 
