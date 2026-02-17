@@ -45,6 +45,8 @@ graph TD
     MP -->|UI| B1[Browser<br/>localhost:8025]
     RMQ -->|Management UI| B2[Browser<br/>localhost:15673]
 
+
+   
     
 **🔄 Workflow Diagram**
 
