@@ -1,14 +1,48 @@
-📧 Email Dispatcher System
-Multi-App Email Dispatch System with RabbitMQ & Mailpit
+## 📧 Multi-App Email Dispatch System with RabbitMQ & Mailpit
 
 https://img.shields.io/badge/version-1.0.0-blue
 https://img.shields.io/badge/Go-1.21+-00ADD8
 https://img.shields.io/badge/RabbitMQ-3.13-FF6600
 https://img.shields.io/badge/Docker-Compose-2496ED
-📋 Project Overview
 
+**📋 Project Overview**
 This project is an email dispatcher system that collects emails from 3 different applications, queues them in RabbitMQ, and dispatches them to Mailpit (test mail server) using 2 concurrent workers.
-🏗️ Architecture Diagram
+
+**🏗️ Architecture Diagram**
+graph TD
+    subgraph "Publisher Apps"
+        A1[App 1<br/>5 emails]
+        A2[App 2<br/>5 emails]
+        A3[App 3<br/>5 emails]
+    end
+
+    subgraph "Message Broker"
+        RMQ[RabbitMQ<br/>email_queue]
+    end
+
+    subgraph "Consumer Workers"
+        W1[Worker 1]
+        W2[Worker 2]
+    end
+
+    subgraph "Mail Server"
+        MP[Mailpit<br/>Test Mail Server]
+    end
+
+    A1 -->|1.5s interval| RMQ
+    A2 -->|1.5s interval| RMQ
+    A3 -->|1.5s interval| RMQ
+    
+    RMQ -->|2s delay| W1
+    RMQ -->|2s delay| W2
+    
+    W1 --> MP
+    W2 --> MP
+    
+    MP -->|UI| B1[Browser<br/>localhost:8025]
+    RMQ -->|Management UI| B2[Browser<br/>localhost:15673]
+
+    
 🔄 Workflow Diagram
 ✨ Features
 
