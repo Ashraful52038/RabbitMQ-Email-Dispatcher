@@ -12,44 +12,42 @@ This project is an email dispatcher system that collects emails from 3 different
 
 
 **🏗️ Architecture Diagram**
-graph TD
-    subgraph "Publisher Apps"
-        A1[App 1<br/>5 emails]
-        A2[App 2<br/>5 emails]
-        A3[App 3<br/>5 emails]
-    end
 
-    subgraph "Message Broker"
-        RMQ[RabbitMQ<br/>email_queue]
+```mermaid
+   graph LR
+    subgraph Publishers
+        A1[App 1]
+        A2[App 2]
+        A3[App 3]
     end
-
-    subgraph "Consumer Workers"
+    
+    subgraph Queue
+        Q[(RabbitMQ<br/>email_queue)]
+    end
+    
+    subgraph Workers
         W1[Worker 1]
         W2[Worker 2]
     end
-
-    subgraph "Mail Server"
-        MP[Mailpit<br/>Test Mail Server]
-    end
-
-    A1 -->|1.5s interval| RMQ
-    A2 -->|1.5s interval| RMQ
-    A3 -->|1.5s interval| RMQ
     
-    RMQ -->|2s delay| W1
-    RMQ -->|2s delay| W2
+    M[Mailpit]
     
-    W1 --> MP
-    W2 --> MP
+    A1 & A2 & A3 -->|publish| Q
+    Q -->|consume| W1 & W2
+    W1 & W2 -->|send| M
     
-    MP -->|UI| B1[Browser<br/>localhost:8025]
-    RMQ -->|Management UI| B2[Browser<br/>localhost:15673]
-
-
+    style A1 fill:#f9f,stroke:#333
+    style A2 fill:#f9f,stroke:#333
+    style A3 fill:#f9f,stroke:#333
+    style Q fill:#bbf,stroke:#333
+    style W1 fill:#bfb,stroke:#333
+    style W2 fill:#bfb,stroke:#333
+    style M fill:#fbb,stroke:#333
+```
    
     
 **🔄 Workflow Diagram**
-
+```mermaid
 sequenceDiagram
     participant App1 as App 1
     participant App2 as App 2
@@ -75,6 +73,7 @@ sequenceDiagram
     
     MP-->>Browser: Show in UI (port 8025)
     RMQ-->>Browser: Management UI (port 15673)
+```
     
 **✨ Features**
 
@@ -105,6 +104,7 @@ sequenceDiagram
     Protocol: AMQP, HTTP
 
 📁 Project Structure
+```mermaid
 graph TD
     A[📂 email-dispatcher]
 
@@ -124,6 +124,7 @@ graph TD
     A --> H[📂 shared]
     H --> H1[📂 models]
     H1 --> H2[email.go<br/>Common email model]
+```
 
 **🚀 Installation Guide**
 
@@ -170,7 +171,8 @@ Step by Step Installation
         go run publisher/main.go
 
 3. Access UIs
-     | Service               | URL                       | Credentials   |
+
+  | Service               | URL                       | Credentials   |
 |-----------------------|---------------------------|---------------|
 | RabbitMQ Management   | http://localhost:15673    | guest/guest   |
 | Mailpit UI            | http://localhost:8025     | None          |
@@ -186,6 +188,7 @@ Step by Step Installation
 
 **💡 Mechanism Explanation**
 Publisher Flow
+```mermaid
 flowchart LR
     Start([Start]) --> Loop{Loop 5 times}
     Loop -->|Yes| Create[Create Email]
@@ -193,8 +196,10 @@ flowchart LR
     Send --> Wait[Wait 1.5s]
     Wait --> Loop
     Loop -->|No| Stop([Stop])
+```
     
 Consumer Flow
+```mermaid
 flowchart LR
     Start([Start]) --> Workers{2 Workers}
     Workers --> W1[Worker 1]
@@ -208,6 +213,7 @@ flowchart LR
     Process --> Mailpit[Send to Mailpit]
     Mailpit --> Ack[Acknowledge]
     Ack --> Get
+```
     
 **🧪 Testing**
 
@@ -289,6 +295,7 @@ Diagnostic Commands
 - **Mailpit Docs:** [https://mailpit.axllent.org/docs/](https://mailpit.axllent.org/docs/)
 
 **🎯 Application Flow (Code Level)**
+```mermaid
 classDiagram
     class EmailEvent {
         +string AppID
@@ -316,6 +323,7 @@ classDiagram
     Consumer --> EmailEvent
     Consumer --> MailpitClient
     MailpitClient --> EmailEvent
+```
 
 **🏁 Quick Start Commands**
         
