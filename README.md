@@ -15,34 +15,52 @@ This project is an email dispatcher system that collects emails from 3 different
 
 ```mermaid
    graph LR
-    subgraph Publishers
-        A1[App 1]
-        A2[App 2]
-        A3[App 3]
+    subgraph "📱 Publisher Apps"
+        direction TB
+        A1[<span style='color:#FFFFFF'>App 1<br/>5 emails</span>]
+        A2[<span style='color:#FFFFFF'>App 2<br/>5 emails</span>]
+        A3[<span style='color:#FFFFFF'>App 3<br/>5 emails</span>]
     end
-    
-    subgraph Queue
-        Q[(RabbitMQ<br/>email_queue)]
+
+    subgraph "🔄 Message Broker"
+        Q[<span style='color:#000000'><b>RabbitMQ</b><br/>email_queue<br/>15 messages</span>]
     end
-    
-    subgraph Workers
-        W1[Worker 1]
-        W2[Worker 2]
+
+    subgraph "⚡ Consumer Workers"
+        direction TB
+        W1[<span style='color:#FFFFFF'><b>Worker 1</b><br/>2s delay</span>]
+        W2[<span style='color:#FFFFFF'><b>Worker 2</b><br/>2s delay</span>]
     end
+
+    subgraph "📨 Test Mail Server"
+        MP[<span style='color:#000000'><b>Mailpit</b><br/>localhost:8025</span>]
+    end
+
+    A1 & A2 & A3 -->|⏱️ 1.5s interval| Q
     
-    M[Mailpit]
+    Q -->|📦 deliver| W1
+    Q -->|📦 deliver| W2
     
-    A1 & A2 & A3 -->|publish| Q
-    Q -->|consume| W1 & W2
-    W1 & W2 -->|send| M
+    W1 -->|📤 send| MP
+    W2 -->|📤 send| MP
+
+    %% Styling - Publisher Apps
+    style A1 fill:#4361ee,stroke:#3a0ca3,stroke-width:3px,color:#ffffff
+    style A2 fill:#4895ef,stroke:#3a0ca3,stroke-width:3px,color:#ffffff
+    style A3 fill:#4cc9f0,stroke:#3a0ca3,stroke-width:3px,color:#ffffff
     
-    style A1 fill:#f9f,stroke:#333
-    style A2 fill:#f9f,stroke:#333
-    style A3 fill:#f9f,stroke:#333
-    style Q fill:#bbf,stroke:#333
-    style W1 fill:#bfb,stroke:#333
-    style W2 fill:#bfb,stroke:#333
-    style M fill:#fbb,stroke:#333
+    %% Styling - RabbitMQ
+    style Q fill:#f9c74f,stroke:#f9844a,stroke-width:4px,color:#000000
+    
+    %% Styling - Workers
+    style W1 fill:#f94144,stroke:#f3722c,stroke-width:3px,color:#ffffff
+    style W2 fill:#f9844a,stroke:#f94144,stroke-width:3px,color:#ffffff
+    
+    %% Styling - Mailpit
+    style MP fill:#90be6d,stroke:#4c956c,stroke-width:4px,color:#000000
+    
+    %% Link styling
+    linkStyle default stroke-width:2px,fill:none,stroke:#666
 ```
    
     
