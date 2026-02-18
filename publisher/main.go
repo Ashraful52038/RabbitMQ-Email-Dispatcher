@@ -53,12 +53,14 @@ func publishEmails(appID string, ch *amqp.Channel, queueName string) {
 			AppId:     appID,
 			EmailId:   fmt.Sprintf("%s-email-%d", appID, i),
 			Recipient: fmt.Sprintf("user%d@example.com", i),
+			From:      "sender@example.com", // ✅ From field add korlam!
 			Subject:   fmt.Sprintf("Test Email %d from %s", i, appID),
 			Body:      fmt.Sprintf("This is test email %d from %s", i, appID),
 			TimeStamp: time.Now().Unix(),
 		}
 
 		body, _ := json.Marshal(email)
+		log.Printf("[%s] Publishing: %s", appID, string(body)) // Debug log
 
 		err := ch.Publish(
 			"",        // exchange

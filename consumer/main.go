@@ -15,7 +15,7 @@ import (
 )
 
 func main() {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5673/")
+	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
 	if err != nil {
 		log.Fatal("Failed to connect:", err)
 	}
@@ -57,7 +57,7 @@ func main() {
 
 	// Worker pool started
 	for i := 0; i < numWorkers; i++ {
-		go worker(i+1, &wg, msgs, ch, mailpitClient)
+		go worker(i+1, &wg, msgs, mailpitClient)
 	}
 
 	log.Println("Consumer started. Press Ctrl+C to exit.")
@@ -68,26 +68,35 @@ func main() {
 	<-sigChan
 
 	log.Println("Shutting down...")
-	ch.Close()
 	wg.Wait()
 }
 
-func worker(id int, wg *sync.WaitGroup, msgs <-chan amqp.Delivery, ch *amqp.Channel, mailpit *mailpit.Client) {
+func worker(id int, wg *sync.WaitGroup, msgs <-chan amqp.Delivery, mailpit *mailpit.Client) {
 	defer wg.Done()
 
 	log.Printf("Worker %d started", id)
 
 	for msg := range msgs {
+		log.Printf("[Worker %d] Received message: %s", id, string(msg.Body))
+
 		log.Printf("[Worker %d] Waiting 2 seconds before processing", id)
 		time.Sleep(2 * time.Second)
 
 		var email models.EmailEvent
-		json.Unmarshal(msg.Body, &email)
 
-		log.Printf("[Worker %d] Processing: %s", id, email.EmailId)
+		// ✅ ERROR HANDLING ADD KORLAM!
+		err := json.Unmarshal(msg.Body, &email)
+		if err != nil {
+			log.Printf("[Worker %d] Failed to parse JSON: %v", id, err)
+			log.Printf("[Worker %d] Raw message: %s", id, string(msg.Body))
+			msg.Nack(false, false) // Reject, don't requeue
+			continue
+		}
+
+		log.Printf("[Worker %d] Processing: %s for %s", id, email.EmailId, email.Recipient)
 
 		// send mailpit
-		err := mailpit.SendEmail(email)
+		err = mailpit.SendEmail(email)
 		if err != nil {
 			log.Printf("[Worker %d] Failed: %v", id, err)
 			msg.Nack(false, true) // requeue
